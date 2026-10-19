@@ -1,0 +1,114 @@
+# Monitor mundial de mortalidad materna (ODS 3.1)
+# Son tres contenedores: mysql guarda los datos, recolector los baja de la API de la OMS
+# y dash los muestra en una página web.
+# Las contraseñas van en la carpeta secrets/ y la configuración en el archivo .env.
+
+name: oms-mortalidad-materna
+
+# Para que los logs no llenen el disco: máximo 3 archivos de 10 MB por contenedor.
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+services:
+  mysql:
+    image: mysql:8.4
+    command: ["--default-time-zone=+00:00"]
+    environment:
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_root_password
+      TZ: UTC
+    secrets:
+      # MySQL necesita las tres contraseñas: la de root para arrancar y las otras dos
+      # para crear los usuarios y para revisar que todo esté bien.
+      - mysql_root_password
+      - recolector_password
+      - dashboard_password
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql/init:/docker-entrypoint-initdb.d:ro
+    networks:
+      - interna
+    healthcheck:
+      # MySQL está listo cuando el usuario dashboard ya puede leer una vista.
+      test: ["CMD-SHELL", "MYSQL_PWD=\"$$(cat /run/secrets/dashboard_password)\" mysql --protocol=TCP -h 127.0.0.1 -u dashboard -e 'SELECT 1 FROM analisis.v_indicadores LIMIT 1' >/dev/null 2>&1"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 60s
+    restart: on-failure
+    logging: *logging
+
+  recolector:
+    build: ./recolector
+    image: oms-recolector:local
+    init: true   # para que el recolector se apague bien cuando lo detienes
+    environment:
+      DB_HOST: mysql
+      DB_PORT: "3306"
+      DB_USER: recolector
+      DB_PASSWORD_FILE: /run/secrets/recolector_password
+      API_BASE: https://ghoapi.azureedge.net/api
+      INDICADORES: ${INDICADORES:?Define INDICADORES en el archivo .env}
+      INTERVALO_HORAS: ${INTERVALO_HORAS:-24}
+    secrets:
+      - recolector_password
+    networks:
+      - interna   # para hablar con MySQL
+      - externa   # para salir a internet y consultar la API
+    depends_on:
+      mysql:
+        condition: service_healthy
+    healthcheck:
+      # El recolector deja una señal cada minuto para avisar que sigue vivo.
+      test: ["CMD", "/app/venv/bin/python", "/app/salud.py"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 5m
+    restart: on-failure
+    logging: *logging
+
+  dash:
+    build: ./dash
+    image: oms-dash:local
+    ports:
+      - "127.0.0.1:8050:8050"   # solo se abre desde esta computadora
+    environment:
+      DB_HOST: mysql
+      DB_PORT: "3306"
+      DB_USER: dashboard
+      DB_PASSWORD_FILE: /run/secrets/dashboard_password
+    secrets:
+      - dashboard_password
+    networks:
+      - interna   # para leer MySQL
+      - externa   # para que puedas abrir la página en tu navegador
+    depends_on:
+      mysql:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8050/', timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    restart: on-failure
+    logging: *logging
+
+networks:
+  interna:
+    internal: true   # esta red no tiene salida a internet; MySQL solo está aquí
+  externa: {}
+
+volumes:
+  mysql_data:
+
+secrets:
+  mysql_root_password:
+    file: ./secrets/mysql_root_password.txt
+  recolector_password:
+    file: ./secrets/recolector_password.txt
+  dashboard_password:
+    file: ./secrets/dashboard_password.txt
