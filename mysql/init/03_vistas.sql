@@ -13,6 +13,7 @@ SELECT
   u.region_codigo,
   o.desagregacion,
   o.anio,
+  o.periodo,
   o.valor,
   o.valor_min,
   o.valor_max,
@@ -40,7 +41,7 @@ WINDOW serie AS (PARTITION BY o.indicador_codigo, o.ubicacion_codigo, o.desagreg
 CREATE SQL SECURITY DEFINER VIEW analisis.v_ultimo_dato AS
 SELECT
   indicador_codigo, ubicacion_codigo, ubicacion_nombre, ubicacion_tipo, region_codigo,
-  desagregacion, anio, valor, valor_min, valor_max, fuente, fecha_publicacion_oms, fecha_carga,
+  desagregacion, anio, periodo, valor, valor_min, valor_max, fuente, fecha_publicacion_oms, fecha_carga,
   anio_anterior, valor_anterior, cambio_pct, ancho_rango_relativo, cambio_fuente
 FROM (
   SELECT s.*,

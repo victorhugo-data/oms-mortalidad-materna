@@ -21,6 +21,7 @@ services:
       MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_root_password
       MYSQL_ROOT_HOST: localhost   # root solo puede entrar desde dentro del contenedor
       TZ: UTC
+      LANG: C.UTF-8                # para que la terminal de MySQL muestre bien los acentos
     secrets:
       # MySQL necesita las tres contraseñas: la de root para arrancar y las otras dos
       # para crear los usuarios y para revisar que todo esté bien.

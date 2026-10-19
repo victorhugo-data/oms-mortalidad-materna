@@ -27,8 +27,8 @@ VALUES
    'SUBIR',
    NULL),
 
-  ('anc4',
-   'Antenatal care coverage - at least four visits (in the two or three years preceding the survey) (%)',
+  ('WHS4_154',
+   'Antenatal care coverage - at least four visits (%)',
    '%',
    'REPORTADO',
    'Percentage of women aged 15-49 with a live birth who received antenatal care four or more times, from any provider.',

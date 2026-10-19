@@ -64,6 +64,7 @@ CREATE TABLE limpio.observaciones (
   indicador_codigo      VARCHAR(50)  NOT NULL,
   ubicacion_codigo      VARCHAR(20)  NOT NULL,
   anio                  SMALLINT     NOT NULL,                  -- TimeDim
+  periodo               VARCHAR(50)  NULL,                      -- TimeDimensionValue: casi siempre el año; en encuestas puede ser "2013-2015"
   desagregacion         VARCHAR(255) NOT NULL DEFAULT 'TOTAL',  -- 'TOTAL' o pares "Tipo:valor" unidos con "|"
   valor                 DOUBLE       NOT NULL,                  -- NumericValue
   valor_min             DOUBLE       NULL,                      -- Low
@@ -86,6 +87,7 @@ CREATE TABLE limpio.observaciones (
 CREATE TABLE limpio.observaciones_historial (
   id                       INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   observacion_id           INT UNSIGNED NOT NULL,
+  periodo                  VARCHAR(50)  NULL,
   valor                    DOUBLE       NOT NULL,
   valor_min                DOUBLE       NULL,
   valor_max                DOUBLE       NULL,
@@ -106,17 +108,18 @@ CREATE TRIGGER limpio.observaciones_guardar_historial
 BEFORE UPDATE ON limpio.observaciones
 FOR EACH ROW
 BEGIN
-  IF NOT (OLD.valor <=> NEW.valor
+  IF NOT (OLD.periodo <=> NEW.periodo
+          AND OLD.valor <=> NEW.valor
           AND OLD.valor_min <=> NEW.valor_min
           AND OLD.valor_max <=> NEW.valor_max
           AND OLD.fuente <=> NEW.fuente
           AND OLD.fecha_publicacion_oms <=> NEW.fecha_publicacion_oms) THEN
     INSERT INTO limpio.observaciones_historial
-      (observacion_id, valor, valor_min, valor_max, fuente, fecha_publicacion_oms,
+      (observacion_id, periodo, valor, valor_min, valor_max, fuente, fecha_publicacion_oms,
        carga_id, reemplazado_por_carga_id)
     VALUES
-      (OLD.id, OLD.valor, OLD.valor_min, OLD.valor_max, OLD.fuente, OLD.fecha_publicacion_oms,
-       OLD.carga_id, NEW.carga_id);
+      (OLD.id, OLD.periodo, OLD.valor, OLD.valor_min, OLD.valor_max, OLD.fuente,
+       OLD.fecha_publicacion_oms, OLD.carga_id, NEW.carga_id);
   END IF;
 END$$
 DELIMITER ;

@@ -11,7 +11,7 @@ consulta() {
   local usuario="$1" sql="$2" secreto
   shift 2
   if [ "$usuario" = root ]; then secreto=mysql_root_password; else secreto="${usuario}_password"; fi
-  MYSQL_PWD="$(cat "/run/secrets/$secreto")" mysql -u"$usuario" "$@" -e "$sql" 2>&1
+  MYSQL_PWD="$(cat "/run/secrets/$secreto")" mysql --default-character-set=utf8mb4 -u"$usuario" "$@" -e "$sql" 2>&1
 }
 
 # Compara un conteo con lo que debería salir.
