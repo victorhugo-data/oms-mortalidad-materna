@@ -1,0 +1,3 @@
+# Para correr las pruebas (no va dentro de la imagen).
+-r requirements.txt
+pytest==9.1.1
