@@ -1,0 +1,18 @@
+# Contraseñas y configuración local, nunca se suben
+.env
+secrets/
+
+# Respaldos de la base de datos
+respaldos/
+
+# Archivos que genera Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+
+# Archivos que crean Windows y macOS
+.DS_Store
+Thumbs.db
+desktop.ini

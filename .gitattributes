@@ -1,0 +1,9 @@
+# Guarda todos los archivos de texto con saltos de línea de Linux (LF).
+# Los scripts corren en contenedores Linux y con los saltos de Windows (CRLF) fallan.
+* text=auto eol=lf
+
+# Imágenes y archivos zip: Git los deja tal cual
+*.png binary
+*.jpg binary
+*.gif binary
+*.zip binary
