@@ -1,0 +1,150 @@
+/* Estilo del dashboard: colores tranquilos, la letra del sistema y espacio para respirar. */
+:root {
+  color-scheme: light;
+  --plano: #f9f9f7;
+  --superficie: #fcfcfb;
+  --tinta: #0b0b0b;
+  --tinta-2: #52514e;
+  --tenue: #898781;
+  --rejilla: #e1e0d9;
+  --borde: rgba(11, 11, 11, 0.10);
+  --acento: #2a78d6;
+  --letra: system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* Los controles de Dash con los mismos colores que las gráficas */
+  --Dash-Fill-Interactive-Strong: #2a78d6;
+  --Dash-Fill-Interactive-Weak: rgba(42, 120, 214, 0.06);
+  --Dash-Fill-Primary-Hover: rgba(11, 11, 11, 0.04);
+  --Dash-Fill-Primary-Active: rgba(42, 120, 214, 0.10);
+  --Dash-Text-Strong: #0b0b0b;
+  --Dash-Text-Primary: #0b0b0b;
+  --Dash-Text-Weak: #52514e;
+  --Dash-Text-Disabled: #898781;
+  --Dash-Stroke-Strong: #a9a79f;
+  --Dash-Stroke-Weak: #e1e0d9;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--plano);
+  color: var(--tinta);
+  font-family: var(--letra);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.pagina { max-width: 1280px; margin: 0 auto; padding: 24px 24px 48px; }
+
+.encabezado h1 { margin: 0 0 4px; font-size: 26px; font-weight: 650; letter-spacing: -0.01em; }
+.subtitulo { margin: 0; color: var(--tinta-2); }
+.cita { margin: 4px 0 0; color: var(--tenue); font-size: 13px; }
+a { color: var(--acento); }
+
+.aviso {
+  margin: 16px 0 0;
+  padding: 10px 14px;
+  border: 1px solid #f3c9b8;
+  border-radius: 8px;
+  background: #fdf1ec;
+  color: #7a2e0e;
+}
+
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 24px;
+  align-items: flex-start;
+  margin: 20px 0 16px;
+  padding: 16px;
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+  background: var(--superficie);
+}
+.campo { display: flex; flex-direction: column; gap: 6px; min-width: 150px; }
+.campo-ancho { flex: 2 1 300px; }
+.campo-anios { flex: 1 1 300px; }
+.etiqueta { color: var(--tinta-2); font-size: 13px; font-weight: 600; }
+.umbral { display: flex; align-items: center; gap: 6px; }
+.umbral input {
+  width: 80px;
+  padding: 7px 8px;
+  border: 1px solid var(--rejilla);
+  border-radius: 6px;
+  background: #fff;
+  font: inherit;
+}
+
+.ficha {
+  margin: 0 0 16px;
+  padding: 14px 16px;
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+  background: var(--superficie);
+  color: var(--tinta-2);
+}
+.ficha-titulo { color: var(--tinta); }
+.ficha p { margin: 6px 0; }
+.ficha-datos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+}
+.tenue { color: var(--tenue); }
+
+.pestanas { border-bottom: 1px solid var(--rejilla); }
+.pestanas-contenido {
+  padding: 4px 16px 16px;
+  border: 1px solid var(--borde);
+  border-top: none;
+  border-radius: 0 0 12px 12px;
+  background: var(--superficie);
+}
+.nota { max-width: 920px; margin: 12px 4px; color: var(--tinta-2); font-size: 14px; }
+.fila-control { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin: 12px 0 0; }
+.casilla label { color: var(--tinta-2); }
+
+.boton {
+  padding: 8px 14px;
+  border: 1px solid var(--acento);
+  border-radius: 8px;
+  background: var(--acento);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.boton:hover { background: #256abf; }
+.boton:focus-visible { outline: 2px solid var(--tinta); outline-offset: 2px; }
+
+.tabla {
+  --ag-font-family: var(--letra);
+  --ag-font-size: 13px;
+  --ag-accent-color: var(--acento);
+  --ag-foreground-color: var(--tinta);
+  --ag-background-color: var(--superficie);
+  --ag-header-background-color: var(--plano);
+  --ag-border-color: var(--rejilla);
+  --ag-row-border-color: var(--rejilla);
+}
+
+.notas {
+  margin-top: 32px;
+  padding: 16px 20px;
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+  background: var(--superficie);
+  color: var(--tinta-2);
+  font-size: 14px;
+}
+.notas h2 { margin: 0 0 8px; color: var(--tinta); font-size: 16px; }
+.notas li { margin: 4px 0; }
+
+@media (max-width: 640px) {
+  .pagina { padding: 16px; }
+  .encabezado h1 { font-size: 22px; }
+}
